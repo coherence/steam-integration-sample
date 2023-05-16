@@ -1,0 +1,24 @@
+{
+    "name": "SteamSample",
+    "rootNamespace": "",
+    "references": [
+        "Coherence.Toolkit",
+        "Coherence.Transport",
+        "Coherence.Brook",
+        "Coherence.Log",
+        "Coherence.Tend",
+        "Coherence.Stats",
+        "Coherence.Common",
+        "Coherence.Runtime",
+        "Coherence"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

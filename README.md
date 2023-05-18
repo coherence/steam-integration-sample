@@ -11,7 +11,7 @@ The `ICoherenceRelay` implementation allows for users to connect to the hosting 
 
 `SteamManager` will initialize the SteamSDK and manage the joining and hosting of self-hosted servers.
 
-`SteamLobbyUI` is a simple example of how to provide hosting and joining accessibility, that will provide a UI in the top left of the screen.
+`SteamLobbyUI` is a simple sample for hosting and joining accessibility, that will provide a UI in the top left of the screen.
 
 ## How to use in your own project
 

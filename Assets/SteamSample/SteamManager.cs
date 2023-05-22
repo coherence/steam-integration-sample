@@ -22,7 +22,6 @@ namespace SteamSample
 
         public Lobby? activeLobby;
 
-        SteamHost coherenceSteamRelay;
         CoherenceBridge bridge;
         EndpointData endpointData;
         bool hostWithLobby;
@@ -97,12 +96,6 @@ namespace SteamSample
             {
                 SteamClient.RunCallbacks();
             }
-
-            // When hosting a game, relay packets between players and the replication server
-            if (coherenceSteamRelay != null)
-            {
-                coherenceSteamRelay.Update();
-            }
         }
 
         void OnDisable()
@@ -122,12 +115,6 @@ namespace SteamSample
 
         void Shutdown()
         {
-            if (coherenceSteamRelay != null)
-            {
-                coherenceSteamRelay.Close();
-                coherenceSteamRelay = null;
-            }
-
             if (activeLobby.HasValue)
             {
                 activeLobby.Value.Leave();
@@ -196,7 +183,7 @@ namespace SteamSample
             }
 
             // Init Steam Relay
-            coherenceSteamRelay = new SteamHost(endpointData);
+            bridge.RelayManager.SetRelay(new SteamRelay());
 
             // Connect to Replication Server using the normal UDP transport
             bridge.SetTransportFactory(null);
@@ -305,7 +292,7 @@ namespace SteamSample
                 JoinGame();
             }
         }
-        
+
         void StartReplicationServer()
         {
             if (replicationServer != null)
@@ -322,7 +309,6 @@ namespace SteamSample
                 SignallingPort = 32002,
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
-                Token = RuntimeSettings.instance.ReplicationServerToken,
             };
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);

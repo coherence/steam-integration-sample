@@ -31,5 +31,6 @@ MonoBehaviour:
   organizationID: 
   projectID: 
   projectName: 
+  defaultTransportMode: 0
   replicationServerToken: 
   playApiEndpoint: https://api.prod.coherence.io/v1/play

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
@@ -11,17 +11,14 @@ namespace SteamSample
     {
         public bool showLobbyUI = true;
 
-        public SteamManager steamManager;
-        public List<Lobby> lobbies = new List<Lobby>();
-        public Vector2 scrollBarPosition;
-        public bool refreshInProgress;
+        SteamManager steamManager;
+        List<Lobby> lobbies = new List<Lobby>();
+        Vector2 scrollBarPosition;
+        bool refreshInProgress;
 
         void Awake()
         {
-            if (steamManager == null)
-            {
-                steamManager = GetComponent<SteamManager>();
-            }
+            steamManager = GetComponent<SteamManager>();
         }
 
         void OnGUI()
@@ -90,7 +87,7 @@ namespace SteamSample
             GUILayout.EndScrollView();
         }
 
-        void RefreshLobbies()
+        async void RefreshLobbies()
         {
             // Don't refresh if the last refresh is still in progress
             if (refreshInProgress)
@@ -105,26 +102,27 @@ namespace SteamSample
                 return;
             }
 
-            refreshInProgress = true;
 
             // Request lobbies
-            SteamMatchmaking
-                .LobbyList
-                .RequestAsync()
-                .ContinueWith(request => {
-                    refreshInProgress = false;
-
-                    // Request has failed
-                    if (request.IsFaulted)
-                    {
-                        Debug.LogError($"Lobbies refresh failed: {request.Exception}");
-                        return;
-                    }
-
-                    // Request succeeded, update the lobbies list
-                    lobbies.Clear();
-                    lobbies.AddRange(request.Result);
-                }, TaskContinuationOptions.ExecuteSynchronously);
+            refreshInProgress = true;
+            
+            try
+            {
+                Lobby[] newLobbies = await SteamMatchmaking.LobbyList.RequestAsync();
+                
+                // Request succeeded, update the lobbies list
+                lobbies.Clear();
+                if (newLobbies != null)
+                {
+                    lobbies.AddRange(newLobbies);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"Lobbies refresh failed: {exception}");
+            }
+            
+            refreshInProgress = false;
         }
     }
 }

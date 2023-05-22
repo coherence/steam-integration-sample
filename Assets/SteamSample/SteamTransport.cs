@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using Coherence.Brook;
 using Coherence.Brook.Octet;
+using Coherence.Common;
 using Coherence.Connection;
 using Coherence.Stats;
 using Coherence.Transport;
@@ -22,10 +23,7 @@ namespace SteamSample
         public SteamId HostSteamId;
 
         public event Action OnOpen;
-
-#pragma warning disable CS0067 // The event is never used
         public event Action<ConnectionException> OnError;
-#pragma warning restore CS0067
 
         public TransportState State { get; private set; }
         public bool IsReliable => false;
@@ -44,7 +42,7 @@ namespace SteamSample
             isClosing = false;
         }
 
-        public void Open(EndpointData _)
+        public void Open(EndpointData _, ConnectionSettings __)
         {
             if (!SteamClient.IsValid)
             {
@@ -96,19 +94,14 @@ namespace SteamSample
             }
 
             steamRelayConnection.Receive();
-            
+
             while (incomingPackets.Count > 0)
             {
                 var packet = incomingPackets.Dequeue();
                 var stream = new InOctetStream(packet);
                 buffer.Add((stream, default));
-                stats.TrackIncomingPacket(stream);
+                stats.TrackIncomingPacket((uint)stream.RemainingOctetCount);
             }
-        }
-
-        public void OnConnectionChanged(ConnectionInfo info)
-        {
-            Debug.Log($"{nameof(SteamTransport)} OnConnectionChanged: {info.State}");
         }
 
         public void OnConnecting(ConnectionInfo info)

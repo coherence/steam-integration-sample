@@ -75,6 +75,9 @@ namespace SteamSample
             // Disconnect packet needs to be sent reliably, otherwise it will be discarded when the connection is closed
             var sendType = isClosing ? SendType.Reliable : SendType.Unreliable;
 
+            // Throttling is already handled by coherence
+            sendType |= SendType.NoNagle;
+
             var buffer = stream.GetBuffer();
             var result = steamRelayConnection.Connection.SendMessage(buffer.Array, buffer.Offset, buffer.Count, sendType);
             if (result != Result.OK)

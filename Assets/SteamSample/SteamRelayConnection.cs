@@ -33,13 +33,16 @@ namespace SteamSample
             {
                 Debug.LogError($"{nameof(SteamRelayConnection)} failed to close Steam relay connection");
             }
-            
+
             messagesFromSteamToServer.Clear();
         }
 
         public void SendMessageToClient(ArraySegment<byte> packetData)
         {
-            var result = steamConnection.SendMessage(packetData.Array, packetData.Offset, packetData.Count, SendType.Unreliable);
+            // Throttling is already handled by coherence
+            var sendType = SendType.Unreliable | SendType.NoNagle;
+
+            var result = steamConnection.SendMessage(packetData.Array, packetData.Offset, packetData.Count, sendType);
             if (result != Result.OK)
             {
                 Debug.LogError($"{nameof(SteamRelayConnection)} sending message to {steamConnection.ConnectionName} failed with result: {result}");

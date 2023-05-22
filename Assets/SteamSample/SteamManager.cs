@@ -309,6 +309,7 @@ namespace SteamSample
                 SignallingPort = 32002,
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
+                Token = RuntimeSettings.instance.ReplicationServerToken,
             };
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);

@@ -183,7 +183,7 @@ namespace SteamSample
             }
 
             // Init Steam Relay
-            bridge.RelayManager.SetRelay(new SteamRelay());
+            bridge.SetRelay(new SteamRelay());
 
             // Connect to Replication Server using the normal UDP transport
             bridge.SetTransportFactory(null);

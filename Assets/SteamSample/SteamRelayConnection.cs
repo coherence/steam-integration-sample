@@ -39,6 +39,11 @@ namespace SteamSample
 
         public void SendMessageToClient(ArraySegment<byte> packetData)
         {
+            if (!SteamClient.IsValid)
+            {
+                return;
+            }
+
             // Throttling is already handled by coherence
             var sendType = SendType.Unreliable | SendType.NoNagle;
 

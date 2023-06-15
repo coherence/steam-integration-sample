@@ -314,7 +314,9 @@ namespace SteamSample
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);
             var logFilePath = Path.Combine(consoleLogDir, "coherence-server");
-            replicationServer = Launcher.Create(config, $"--log-file \"{logFilePath}\"");
+            var additionalArgs = $"--log-file \"{logFilePath}\" " +
+                                 $"--local-ip-override 127.0.0.1"; // This prevents firewall popup on windows
+            replicationServer = Launcher.Create(config, additionalArgs);
             replicationServer.OnLog += ReplicationServer_OnLog;
             replicationServer.OnExit += ReplicationServer_OnExit;
             replicationServer.Start();

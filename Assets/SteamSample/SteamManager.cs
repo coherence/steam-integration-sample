@@ -101,6 +101,11 @@ namespace SteamSample
         void OnDisable()
         {
             // Cleanup
+            if (bridge)
+            {
+                bridge.Disconnect();
+            }
+            
             Shutdown();
             SteamClient.Shutdown();
         }

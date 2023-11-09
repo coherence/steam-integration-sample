@@ -78,7 +78,7 @@ namespace SteamSample
             // Throttling is already handled by coherence
             sendType |= SendType.NoNagle;
 
-            var buffer = stream.GetBuffer();
+            var buffer = stream.Close();
             var result = steamRelayConnection.Connection.SendMessage(buffer.Array, buffer.Offset, buffer.Count, sendType);
             if (result != Result.OK)
             {

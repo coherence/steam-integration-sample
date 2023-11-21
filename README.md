@@ -2,6 +2,8 @@
 
 A sample integration for the **Steam P2P Relay** and **coherence** networking for player-hosted servers.
 
+ℹ️ **Download a release that matches the installed coherence SDK version to at least MAJOR.MINOR. For example, if you are using SDK v1.0.5 (MAJOR = 1, MINOR = 0), use [v1.0.0](https://github.com/coherence/steam-integration-sample/releases/tag/v1.0.0). Check the list of [releases](https://github.com/coherence/steam-integration-sample/releases) on this repository.**
+
 ## How does it work
 
 The **Steam Integration** is using a combination of the Steam relay servers and an implementation of `ICoherenceRelay` to enable Steam users to connect and play with each other while avoiding NAT issues.

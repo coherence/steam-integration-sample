@@ -11,6 +11,7 @@ namespace SteamSample
     {
         private Connection steamConnection;
         private readonly Queue<ArraySegment<byte>> messagesFromSteamToServer = new Queue<ArraySegment<byte>>();
+        private readonly byte[] packetBuffer = new byte[1024 * 4];
 
         public SteamRelayConnection(Connection steamConnection)
         {
@@ -37,12 +38,14 @@ namespace SteamSample
             messagesFromSteamToServer.Clear();
         }
 
-        public void SendMessageToClient(ArraySegment<byte> packetData)
+        public void SendMessageToClient(ReadOnlySpan<byte> packetData)
         {
             // Throttling is already handled by coherence
             var sendType = SendType.Unreliable | SendType.NoNagle;
 
-            var result = steamConnection.SendMessage(packetData.Array, packetData.Offset, packetData.Count, sendType);
+            packetData.CopyTo(packetBuffer);
+
+            var result = steamConnection.SendMessage(packetBuffer, 0, packetData.Length, sendType);
             if (result != Result.OK)
             {
                 Debug.LogError($"{nameof(SteamRelayConnection)} sending message to {steamConnection.ConnectionName} failed with result: {result}");

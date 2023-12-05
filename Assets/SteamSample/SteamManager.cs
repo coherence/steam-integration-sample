@@ -25,7 +25,7 @@ namespace SteamSample
         CoherenceBridge bridge;
         EndpointData endpointData;
         bool hostWithLobby;
-        ReplicationServer replicationServer;
+        IReplicationServer replicationServer;
 
         void Start()
         {
@@ -105,7 +105,7 @@ namespace SteamSample
             {
                 bridge.Disconnect();
             }
-            
+
             Shutdown();
             SteamClient.Shutdown();
         }

@@ -55,10 +55,10 @@ namespace SteamSample
         {
             endpointData = new EndpointData
             {
-                host = RuntimeSettings.instance.LocalHost,
-                port = RuntimeSettings.instance.LocalWorldUDPPort,
+                host = RuntimeSettings.Instance.LocalHost,
+                port = RuntimeSettings.Instance.LocalWorldUDPPort,
                 region = EndpointData.LocalRegion,
-                schemaId = RuntimeSettings.instance.SchemaID,
+                schemaId = RuntimeSettings.Instance.SchemaID,
             };
 
             // Validate the endpoint
@@ -144,7 +144,7 @@ namespace SteamSample
             }
 
             // Make sure we are not already in a game or joining a game
-            if (bridge.isConnected || bridge.isConnecting)
+            if (bridge.IsConnected || bridge.IsConnecting)
             {
                 throw new Exception("Failed to join game, CoherenceBride is already connected.");
             }
@@ -182,7 +182,7 @@ namespace SteamSample
             Debug.Log($"Hosting game with SteamID #{SteamClient.SteamId}");
 
             // Make sure we are not already hosting or joining a game
-            if (bridge.isConnected || bridge.isConnecting)
+            if (bridge.IsConnected || bridge.IsConnecting)
             {
                 throw new Exception("Failed to host game, CoherenceBride is already connected.");
             }
@@ -212,7 +212,7 @@ namespace SteamSample
         {
             Debug.Log("Disconnecting");
 
-            if (!bridge.isConnected)
+            if (!bridge.IsConnected)
             {
                 throw new Exception("Failed to disconnect, CoherenceBridge is not connected");
             }
@@ -309,12 +309,12 @@ namespace SteamSample
             var config = new ReplicationServerConfig
             {
                 Mode = Mode.World,
-                APIPort = (ushort)RuntimeSettings.instance.WorldsAPIPort,
+                APIPort = (ushort)RuntimeSettings.Instance.WorldsAPIPort,
                 UDPPort = 32001,
                 SignallingPort = 32002,
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
-                Token = RuntimeSettings.instance.ReplicationServerToken,
+                Token = RuntimeSettings.Instance.ReplicationServerToken,
             };
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);

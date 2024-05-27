@@ -22,6 +22,7 @@ namespace SteamSample
     {
         public SteamId HostSteamId;
 
+        public int HeaderSize => 0;
         public event Action OnOpen;
         public event Action<ConnectionException> OnError;
 

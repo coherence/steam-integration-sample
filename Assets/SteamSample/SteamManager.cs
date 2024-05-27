@@ -309,12 +309,12 @@ namespace SteamSample
             var config = new ReplicationServerConfig
             {
                 Mode = Mode.World,
-                APIPort = (ushort)RuntimeSettings.instance.WorldsAPIPort,
+                APIPort = (ushort)RuntimeSettings.Instance.WorldsAPIPort,
                 UDPPort = 32001,
                 SignallingPort = 32002,
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
-                Token = RuntimeSettings.instance.ReplicationServerToken,
+                Token = RuntimeSettings.Instance.ReplicationServerToken,
             };
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);

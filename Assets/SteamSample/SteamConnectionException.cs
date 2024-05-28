@@ -15,10 +15,7 @@ namespace SteamSample
 
         private static string GetMessage(ConnectionInfo info)
         {
-            return $"Peer disconnected: {info.State} " +
-                   $"EndReason: {GetEndReasonString(info)} ({(int)info.EndReason}) " +
-                   $"Address: {info.Address} " +
-                   $"Identity: {info.Identity}";
+            return $"{info.State}: {GetEndReasonString(info)} ({(int)info.EndReason}) ";
         }
 
         public static string GetEndReasonString(ConnectionInfo info)

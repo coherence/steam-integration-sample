@@ -131,11 +131,13 @@ namespace SteamSample
             var gracefulDisconnect = info.EndReason == NetConnectionEnd.App_Min;
             if (gracefulDisconnect)
             {
+                // ConnectionDeniedException translates to serverInitiated=true in ClientCore
+                // This prevents ClientCore from trying and failing to send a DisconnectRequest
                 logger.Info($"OnDisconnected: Connection closed by host");
                 OnError?.Invoke(new ConnectionDeniedException(ConnectionCloseReason.GracefulClose));
             } else
             {
-                logger.Info($"OnDisconnected: {info.State} Reason: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason}) Identity: {info.Identity} Address: {info.Address}");
+                logger.Info($"OnDisconnected: {info.State}: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason})");
                 OnError?.Invoke(new SteamConnectionException(info));
             }
         }

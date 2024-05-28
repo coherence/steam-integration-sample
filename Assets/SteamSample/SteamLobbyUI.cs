@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
+using Coherence.Log;
+using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
 {
@@ -15,6 +17,8 @@ namespace SteamSample
         List<Lobby> lobbies = new List<Lobby>();
         Vector2 scrollBarPosition;
         bool refreshInProgress;
+
+        private static readonly Logger logger = Log.GetLogger<SteamLobbyUI>();
 
         void Awake()
         {
@@ -98,7 +102,7 @@ namespace SteamSample
             // SteamClient must be initialized before we can use SteamMatchmaking
             if (!SteamClient.IsValid)
             {
-                Debug.LogError("Lobbies refresh failed: SteamClient not initialized");
+                logger.Error("Lobbies refresh failed: SteamClient not initialized");
                 return;
             }
 
@@ -119,7 +123,7 @@ namespace SteamSample
             }
             catch (Exception exception)
             {
-                Debug.LogError($"Lobbies refresh failed: {exception}");
+                logger.Error($"Lobbies refresh failed: {exception}");
             }
             
             refreshInProgress = false;

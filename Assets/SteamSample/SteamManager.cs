@@ -9,6 +9,8 @@ using Coherence.Toolkit.ReplicationServer;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
+using Coherence.Log;
+using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
 {
@@ -27,6 +29,9 @@ namespace SteamSample
         bool hostWithLobby;
         IReplicationServer replicationServer;
 
+        private static readonly Logger logger = Log.GetLogger<SteamManager>();
+        private static readonly Logger rsLogger = Log.GetLogger<ReplicationServer>();
+
         void Start()
         {
             // Make sure the scene contains a CoherenceBridge
@@ -34,6 +39,9 @@ namespace SteamSample
             {
                 throw new Exception("Could not find a CoherenceBridge in the scene.");
             }
+
+            logger.UseWatermark = false;
+            rsLogger.UseWatermark = false;
 
             // Listen for connection events
             bridge.onConnected.AddListener(OnConnected);
@@ -81,12 +89,13 @@ namespace SteamSample
             if (!SteamClient.IsValid)
             {
                 SteamClient.Init(steamAppId, false);
+                Dispatch.OnException += exception => logger.Error($"Internal SteamAPI exception: {exception}");
+                SteamNetworking.AllowP2PPacketRelay(true); // Enable relay, if NAT punchthrough fails
+                SteamNetworking.OnP2PConnectionFailed += (sid, err) => logger.Error($"P2P Connection Failed: {sid} {err}");
+                SteamNetworkingUtils.InitRelayNetworkAccess();
             }
 
-            // Enable relay, if NAT punchthrough fails
-            SteamNetworking.AllowP2PPacketRelay(true);
-
-            Debug.Log($"You are logged in to Steam with SteamID #{SteamClient.SteamId}");
+            logger.Info($"You are logged in to Steam with SteamID #{SteamClient.SteamId}");
         }
 
         void Update()
@@ -125,6 +134,11 @@ namespace SteamSample
                 activeLobby.Value.Leave();
                 activeLobby = null;
             }
+
+            if (SteamServer.IsValid)
+            {
+                SteamServer.Shutdown();
+            }
         }
 
         public void JoinGame(SteamId? steamId = null)
@@ -134,7 +148,7 @@ namespace SteamSample
                 steamIdToJoin = steamId.Value;
             }
 
-            Debug.Log($"Joining game with SteamID #{steamIdToJoin}");
+            logger.Info($"Joining game with SteamID #{steamIdToJoin}");
 
             hostWithLobby = false;
 
@@ -146,7 +160,7 @@ namespace SteamSample
             // Make sure we are not already in a game or joining a game
             if (bridge.IsConnected || bridge.IsConnecting)
             {
-                throw new Exception("Failed to join game, CoherenceBride is already connected.");
+                throw new Exception("Failed to join game, CoherenceBridge is already connected.");
             }
 
             // Connect to Replication Server via Steam relay
@@ -169,7 +183,7 @@ namespace SteamSample
             }
             else
             {
-                Debug.LogError($"Failed to get game server SteamID for lobby {lobby.Id}");
+                logger.Error($"Failed to get game server SteamID for lobby {lobby.Id}");
             }
         }
 
@@ -179,12 +193,24 @@ namespace SteamSample
 
             this.hostWithLobby = withLobby;
 
-            Debug.Log($"Hosting game with SteamID #{SteamClient.SteamId}");
+            logger.Info($"Hosting game with SteamID #{SteamClient.SteamId}");
 
             // Make sure we are not already hosting or joining a game
             if (bridge.IsConnected || bridge.IsConnecting)
             {
                 throw new Exception("Failed to host game, CoherenceBride is already connected.");
+            }
+
+            try
+            {
+                // Init SteamServer
+                var serverInit = new SteamServerInit(Application.productName, Application.productName);
+                SteamServer.Init(SteamClient.AppId, serverInit, false);
+                logger.Info($"SteamServer initialized");
+            } catch (Exception e)
+            {
+                logger.Error(e.ToString());
+                return;
             }
 
             // Init Steam Relay
@@ -210,9 +236,9 @@ namespace SteamSample
         [ContextMenu("Disconnect")]
         public void Disconnect()
         {
-            Debug.Log("Disconnecting");
+            logger.Info("Disconnecting");
 
-            if (!bridge.IsConnected)
+            if (!bridge.IsConnected && !bridge.IsConnecting)
             {
                 throw new Exception("Failed to disconnect, CoherenceBridge is not connected");
             }
@@ -227,8 +253,7 @@ namespace SteamSample
 
         void OnConnected(CoherenceBridge _)
         {
-            Debug.Log($"CoherenceBridge OnConnected");
-
+            logger.Info("CoherenceBridge OnConnected");
             if (hostWithLobby)
             {
                 CreateLobby();
@@ -237,19 +262,19 @@ namespace SteamSample
 
         void OnDisconnected(CoherenceBridge _, ConnectionCloseReason reason)
         {
-            Debug.Log($"CoherenceBridge OnDisconnected: {reason}");
+            logger.Info($"CoherenceBridge OnDisconnected: {reason}");
             Shutdown();
         }
 
         void OnConnectionError(CoherenceBridge _, ConnectionException exception)
         {
-            Debug.LogError($"CoherenceBridge OnConnectionError: {exception}");
+            logger.Error($"CoherenceBridge OnConnectionError: {exception}");
             Shutdown();
         }
 
         void CreateLobby()
         {
-            Debug.Log($"Creating lobby");
+            logger.Info($"Creating lobby");
 
             SteamMatchmaking
                 .CreateLobbyAsync()
@@ -257,20 +282,20 @@ namespace SteamSample
                 {
                     if (task.IsFaulted)
                     {
-                        Debug.LogError($"Lobby creation failed: {task.Exception}");
+                        logger.Error($"Lobby creation failed: {task.Exception}");
                         return;
                     }
 
                     Lobby? lobby = task.Result;
                     if (!lobby.HasValue)
                     {
-                        Debug.LogError($"Lobby creation failed");
+                        logger.Error($"Lobby creation failed");
                         return;
                     }
 
                     activeLobby = lobby;
 
-                    Debug.Log($"Lobby created successfully");
+                    logger.Info($"Lobby created successfully");
 
                     lobby.Value.SetGameServer(SteamClient.SteamId);
                     lobby.Value.SetJoinable(true);
@@ -302,7 +327,7 @@ namespace SteamSample
         {
             if (replicationServer != null)
             {
-                Debug.LogWarning("The replication server is already running");
+                logger.Warning("The replication server is already running");
                 return;
             }
 
@@ -315,6 +340,7 @@ namespace SteamSample
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
                 Token = RuntimeSettings.Instance.ReplicationServerToken,
+                DisableThrottling = true,
             };
 
             var consoleLogDir = Path.GetDirectoryName(Application.consoleLogPath);
@@ -333,12 +359,12 @@ namespace SteamSample
 
         void ReplicationServer_OnLog(string log)
         {
-            Debug.Log($"RS: {log}");
+            rsLogger.Info(log);
         }
 
         void ReplicationServer_OnExit(int code)
         {
-            Debug.Log($"Replication server exited with code {code}.");
+            logger.Info($"Replication server exited with code {code}.");
             replicationServer = null;
         }
     }

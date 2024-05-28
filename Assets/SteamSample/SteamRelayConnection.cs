@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Coherence.Toolkit.Relay;
 using Steamworks;
 using Steamworks.Data;
-using UnityEngine;
+using Coherence.Log;
+using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
 {
@@ -11,11 +12,15 @@ namespace SteamSample
     {
         private Connection steamConnection;
         private readonly Queue<ArraySegment<byte>> messagesFromSteamToServer = new Queue<ArraySegment<byte>>();
-        private readonly byte[] packetBuffer = new byte[1024 * 4];
+        private readonly byte[] outgoingPacketBuffer = new byte[1024 * 4];
+
+        private static readonly Logger logger = Log.GetLogger<SteamRelay>();
 
         public SteamRelayConnection(Connection steamConnection)
         {
-            Debug.Log($"{nameof(SteamRelayConnection)} opening relayed client for Steam user #{steamConnection.ConnectionName}");
+            logger.UseWatermark = false;
+
+            logger.Info($"Opening relayed client for Steam user #{steamConnection.ConnectionName}");
 
             this.steamConnection = steamConnection;
         }
@@ -27,12 +32,12 @@ namespace SteamSample
 
         public void OnConnectionClosed()
         {
-            Debug.Log($"{nameof(SteamRelayConnection)} closing relayed client for Steam user #{steamConnection.ConnectionName}");
+            logger.Info($"Closing relayed client for Steam user #{steamConnection.ConnectionName}");
 
             var result = steamConnection.Close();
             if (!result)
             {
-                Debug.LogError($"{nameof(SteamRelayConnection)} failed to close Steam relay connection");
+                logger.Error($"Failed to close Steam relay connection");
             }
 
             messagesFromSteamToServer.Clear();
@@ -43,12 +48,12 @@ namespace SteamSample
             // Throttling is already handled by coherence
             var sendType = SendType.Unreliable | SendType.NoNagle;
 
-            packetData.CopyTo(packetBuffer);
+            packetData.CopyTo(outgoingPacketBuffer);
 
-            var result = steamConnection.SendMessage(packetBuffer, 0, packetData.Length, sendType);
+            var result = steamConnection.SendMessage(outgoingPacketBuffer, 0, packetData.Length, sendType);
             if (result != Result.OK)
             {
-                Debug.LogError($"{nameof(SteamRelayConnection)} sending message to {steamConnection.ConnectionName} failed with result: {result}");
+                logger.Error($"Sending message to {steamConnection.ConnectionName} failed with result: {result}");
             }
         }
 

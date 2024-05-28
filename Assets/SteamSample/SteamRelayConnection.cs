@@ -14,7 +14,7 @@ namespace SteamSample
         private readonly Queue<ArraySegment<byte>> messagesFromSteamToServer = new Queue<ArraySegment<byte>>();
         private readonly byte[] outgoingPacketBuffer = new byte[1024 * 4];
 
-        private static readonly Logger logger = Log.GetLogger<SteamRelay>();
+        private static readonly Logger logger = Log.GetLogger<SteamRelayConnection>();
 
         public SteamRelayConnection(Connection steamConnection)
         {
@@ -32,7 +32,7 @@ namespace SteamSample
 
         public void OnConnectionClosed()
         {
-            logger.Info($"Closing relayed client for Steam user #{steamConnection.ConnectionName}");
+            logger.Info($"Closing relayed client for Steam user {steamConnection.ConnectionName}");
 
             var result = steamConnection.Close();
             if (!result)

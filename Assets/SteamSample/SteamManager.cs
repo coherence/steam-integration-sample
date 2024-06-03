@@ -201,17 +201,10 @@ namespace SteamSample
                 throw new Exception("Failed to host game, CoherenceBride is already connected.");
             }
 
-            try
-            {
-                // Init SteamServer
-                var serverInit = new SteamServerInit(Application.productName, Application.productName);
-                SteamServer.Init(SteamClient.AppId, serverInit, false);
-                logger.Info($"SteamServer initialized");
-            } catch (Exception e)
-            {
-                logger.Error(e.ToString());
-                return;
-            }
+            // Init SteamServer
+            var serverInit = new SteamServerInit(Application.productName, Application.productName);
+            SteamServer.Init(SteamClient.AppId, serverInit, false);
+            logger.Info($"SteamServer initialized");
 
             // Init Steam Relay
             bridge.SetRelay(new SteamRelay());

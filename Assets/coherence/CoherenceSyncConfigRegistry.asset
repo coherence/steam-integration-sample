@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe206545a28be2142b8fa937387721e8, type: 3}
   m_Name: CoherenceSyncConfigRegistry
   m_EditorClassIdentifier: 
-  configs: []
-  loadFromAssetDatabase: 0
+  storedConfigs: []

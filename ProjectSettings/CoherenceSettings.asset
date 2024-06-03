@@ -26,16 +26,12 @@ MonoBehaviour:
   rsLogToFile: 0
   rsLogFilePath: Logs/rs_logs.txt
   rsFileLogLevel: 1
-  bakeMode: 0
   runtimeSettingsGuid: 9b6662b220e56bb498779db0e94a7cbc
   schemaBakeGenerateAsmdef: 0
   reportAnalytics: 1
-  configRegistryMode: 0
   useToolkit: 1
   useCoherenceSyncSchema: 1
   useCustomSchemas: 0
-  RSBundlingEnabledMac: 0
-  RSBundlingEnabledWindows: 0
-  RSBundlingEnabledLinux: 0
+  RSBundlingEnabled: 1
   keepConnectionAlive: 0
   activeSchemas: []

@@ -13,7 +13,6 @@ using Coherence.Stats;
 using Coherence.Transport;
 using Steamworks;
 using Steamworks.Data;
-using UnityEngine;
 using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
@@ -39,7 +38,7 @@ namespace SteamSample
         public SteamTransport(IStats stats, Logger logger)
         {
             this.stats = stats;
-            this.logger = logger;
+            this.logger = logger.With<SteamTransport>();
             isClosing = false;
         }
 
@@ -50,7 +49,7 @@ namespace SteamSample
                 throw new Exception("SteamClient not initialized");
             }
 
-            logger.Info($"{nameof(SteamTransport)} opening outgoing Steam connection.");
+            logger.Info($"Opening outgoing Steam connection.");
 
             steamRelayConnection = SteamNetworkingSockets.ConnectRelay(HostSteamId, 0, this);
 
@@ -66,6 +65,14 @@ namespace SteamSample
 
         public void Close()
         {
+            logger.Info("Closing SteamTransport");
+
+            if (State == TransportState.Closed)
+            {
+                logger.Warning("SteamTransport is already closed");
+                return;
+            }
+
             State = TransportState.Closed;
 
             steamRelayConnection.Close(true);
@@ -83,7 +90,7 @@ namespace SteamSample
             var result = steamRelayConnection.Connection.SendMessage(buffer.Array, buffer.Offset, buffer.Count, sendType);
             if (result != Result.OK)
             {
-                logger.Error($"{nameof(SteamTransport)} failed to send Steam packet to #{HostSteamId} with result: {result}");
+                logger.Error($"Failed to send Steam packet to #{HostSteamId} with result: {result}");
             }
 
             stats.TrackOutgoingPacket(stream.Position);
@@ -110,20 +117,29 @@ namespace SteamSample
 
         public void OnConnecting(ConnectionInfo info)
         {
-            Debug.Log($"{nameof(SteamTransport)} OnConnecting: {info.State}");
+            logger.Info($"OnConnecting: {info.State}");
         }
 
         public void OnConnected(ConnectionInfo info)
         {
-            Debug.Log($"{nameof(SteamTransport)} OnConnected: {info.State}");
+            logger.Info($"OnConnected: {info.State}");
             State = TransportState.Open;
         }
 
         public void OnDisconnected(ConnectionInfo info)
         {
-            Debug.Log($"{nameof(SteamTransport)} OnDisconnected: {info.State}");
-
-            OnError?.Invoke(new ConnectionDeniedException(ConnectionCloseReason.Unknown, $"{nameof(SteamTransport)} Peer disconnected: {info.State} EndReason: {info.EndReason}"));
+            var gracefulDisconnect = info.EndReason == NetConnectionEnd.App_Min;
+            if (gracefulDisconnect)
+            {
+                // ConnectionDeniedException translates to serverInitiated=true in ClientCore
+                // This prevents ClientCore from trying and failing to send a DisconnectRequest
+                logger.Info($"OnDisconnected: Connection closed by host");
+                OnError?.Invoke(new ConnectionDeniedException(ConnectionCloseReason.GracefulClose));
+            } else
+            {
+                logger.Info($"OnDisconnected: {info.State}: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason})");
+                OnError?.Invoke(new SteamConnectionException(info));
+            }
         }
 
         public void OnMessage(IntPtr data, int size, long messageNum, long recvTime, int channel)

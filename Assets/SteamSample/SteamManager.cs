@@ -157,6 +157,11 @@ namespace SteamSample
                 throw new Exception($"You need to enter a host SteamId #{steamIdToJoin} in the inspector or CLI");
             }
 
+            if (steamIdToJoin == SteamClient.SteamId)
+            {
+                throw new Exception($"Failed to join host #{steamIdToJoin} from client #{SteamClient.SteamId}. You need to join from a separate Steam account and machine.");
+            }
+
             // Make sure we are not already in a game or joining a game
             if (bridge.IsConnected || bridge.IsConnecting)
             {

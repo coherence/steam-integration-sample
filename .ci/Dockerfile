@@ -17,7 +17,7 @@ RUN apt-get update
 RUN apt-get install -y python3
 RUN apt-get install -y dotnet-sdk-6.0
 
-WORKDIR steam-integration-sample
+# WORKDIR steam-integration-sample
 
 COPY *.ulf ./
 COPY sdk sdk

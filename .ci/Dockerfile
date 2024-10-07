@@ -17,11 +17,11 @@ RUN apt-get update
 RUN apt-get install -y python3
 RUN apt-get install -y dotnet-sdk-6.0
 
-# WORKDIR steam-integration-sample
-
 COPY *.ulf ./
 COPY sdk sdk
 COPY steam-integration-sample steam-integration-sample
+
+WORKDIR steam-integration-sample
 
 # -u flag is needed to avoid buffering output
 ENTRYPOINT [ "python3", "-u", ".ci/run_tests.py" ]

@@ -45,6 +45,8 @@ def docker_run_steam_sample(args):
     docker_args = "docker run"
     if args.rm:
         docker_args += " --rm"
+    if args.workdir:
+        docker_args += f" -w {args.workdir}"
     if args.volumes:
         for volume in args.volumes:
             ensure_volume_path(volume)
@@ -78,10 +80,16 @@ def str_to_bool(value: str):
     else:
         raise ValueError(f"Invalid boolean value: {value}")
 
+
+def get_default_workdir():
+    return "/steam-integration-sample"
+
+
 def common_docker_run_args(parser):
     parser.add_argument('-r', '--rm', help='Remove container after run', default=True, type=str_to_bool)
     parser.add_argument('--additional-volumes',
                                    help='Additional volumes to mount on top of the default ones', nargs='+')
+    parser.add_argument('-w', '--workdir', help='Working directory', default=get_default_workdir())
     parser.add_argument('-e', '--entrypoint', help='Custom entrypoint', default=None)
     parser.add_argument('-a', '--editor-args', nargs='+', help='Arguments to pass to the test run')
 
@@ -92,7 +100,7 @@ def main():
     command = parser.add_subparsers(required=True, dest="command")
 
     parser.add_argument('-p', '--project-path', help='Relative path to the Unity project',
-                        default="integration-tests")
+                        default="steam-integration-sample")
 
     # Set permissions command
     bin_perm_parser = command.add_parser("set-binaries-permissions",
@@ -101,7 +109,7 @@ def main():
                                  default="sdk/.Runtime")
 
     def get_default_volumes():
-        container_dir = "./TestResults"
+        container_dir = "/steam-integration-sample/TestResults"
         return [f'{os.path.join(os.getcwd(), "TestResults")}:{container_dir}']
 
     # Docker build command

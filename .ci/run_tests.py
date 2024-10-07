@@ -244,7 +244,7 @@ def main():
     parser = argparse.ArgumentParser(description='Runs Steam sample project',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    commands = ['run_project', 'deactivate-license']
+    commands = ['run-project', 'deactivate-license']
     parser.add_argument('-c', '--command', type=str, required=True,
                         help=f'Command to run: {commands}',
                         choices=commands)
@@ -264,7 +264,7 @@ def main():
 
     print(f'Running {args.command}')
 
-    if args.command == 'run_project':
+    if args.command == 'run-project':
         sys.exit(run_project(config))
     elif args.command == 'deactivate-license':
         sys.exit(deactivate_unity_license(config))

@@ -122,7 +122,7 @@ def main():
 
     # Docker run command
     docker_run_parser = command.add_parser("docker-run-steam-sample", help="Run docker image for Steam Sample project")
-    docker_run_parser.add_argument('-t', '--tag', help='Docker image tag', default="editor-tests")
+    docker_run_parser.add_argument('-t', '--tag', help='Docker image tag', default="steam")
     docker_run_parser.add_argument('-v', '--volumes', help='Volumes to mount. Overrides default volumes',
                                    default=get_default_volumes(), nargs='+')
     common_docker_run_args(docker_run_parser)

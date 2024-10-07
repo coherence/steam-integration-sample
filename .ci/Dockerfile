@@ -22,5 +22,6 @@ WORKDIR project
 COPY *.ulf ./
 COPY sdk sdk
 
+
 # -u flag is needed to avoid buffering output
 ENTRYPOINT [ "python3", "-u", ".ci/run_tests.py" ]

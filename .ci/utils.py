@@ -82,7 +82,7 @@ def str_to_bool(value: str):
 
 
 def get_default_workdir():
-    return "C:\\project" if os.name == 'nt' else "/project"
+    return "/"
 
 
 def common_docker_run_args(parser):
@@ -109,7 +109,7 @@ def main():
                                  default="sdk/.Runtime")
 
     def get_default_volumes():
-        container_dir = os.path.join("C:\\project", "TestResults") if os.name == 'nt' else "/project/TestResults"
+        container_dir = "/TestResults"
         return [f'{os.path.join(os.getcwd(), "TestResults")}:{container_dir}']
 
     # Docker build command

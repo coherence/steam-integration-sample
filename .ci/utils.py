@@ -82,7 +82,7 @@ def str_to_bool(value: str):
 
 
 def get_default_workdir():
-    return "/"
+    return "."
 
 
 def common_docker_run_args(parser):
@@ -109,7 +109,7 @@ def main():
                                  default="sdk/.Runtime")
 
     def get_default_volumes():
-        container_dir = "/TestResults"
+        container_dir = "./TestResults"
         return [f'{os.path.join(os.getcwd(), "TestResults")}:{container_dir}']
 
     # Docker build command

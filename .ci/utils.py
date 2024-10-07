@@ -45,8 +45,6 @@ def docker_run_steam_sample(args):
     docker_args = "docker run"
     if args.rm:
         docker_args += " --rm"
-    if args.workdir:
-        docker_args += f" -w {args.workdir}"
     if args.volumes:
         for volume in args.volumes:
             ensure_volume_path(volume)
@@ -80,16 +78,10 @@ def str_to_bool(value: str):
     else:
         raise ValueError(f"Invalid boolean value: {value}")
 
-
-def get_default_workdir():
-    return "."
-
-
 def common_docker_run_args(parser):
     parser.add_argument('-r', '--rm', help='Remove container after run', default=True, type=str_to_bool)
     parser.add_argument('--additional-volumes',
                                    help='Additional volumes to mount on top of the default ones', nargs='+')
-    parser.add_argument('-w', '--workdir', help='Working directory', default=get_default_workdir())
     parser.add_argument('-e', '--entrypoint', help='Custom entrypoint', default=None)
     parser.add_argument('-a', '--editor-args', nargs='+', help='Arguments to pass to the test run')
 

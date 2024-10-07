@@ -118,7 +118,7 @@ def main():
     docker_build_parser.add_argument('-b', '--unity-image-base', help='Unity image base')
     docker_build_parser.add_argument('-t', '--tag', help='Docker image tag', default="steam")
     docker_build_parser.add_argument('-f', '--dockerfile', help='Dockerfile path',
-                                     default=f".ci/Dockerfile")
+                                     default=f"{args.workdir}/.ci/Dockerfile")
 
     # Docker run command
     docker_run_parser = command.add_parser("docker-run-steam-sample", help="Run docker image for Steam Sample project")

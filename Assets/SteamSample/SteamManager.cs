@@ -10,6 +10,7 @@ using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
 using Coherence.Log;
+using Coherence.Transport;
 using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
@@ -215,7 +216,7 @@ namespace SteamSample
             bridge.SetRelay(new SteamRelay());
 
             // Connect to Replication Server using the normal UDP transport
-            bridge.SetTransportFactory(null);
+            bridge.SetTransportFactory(new DefaultTransportFactory());
             bridge.Connect(endpointData);
         }
 

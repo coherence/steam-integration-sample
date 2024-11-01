@@ -106,7 +106,7 @@ def main():
     bin_perm_parser = command.add_parser("set-binaries-permissions",
                                          help="Set permissions for all binaries SDK binaries")
     bin_perm_parser.add_argument('-r', '--runtime-dir', help='Relative path to the runtime directory',
-                                 default="sdk/.Runtime")
+                                 default="../sdk/.Runtime")
 
     def get_default_volumes():
         container_dir = "/steam-integration-sample/TestResults"

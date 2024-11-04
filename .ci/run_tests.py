@@ -118,7 +118,7 @@ def execute_unity_command(name: str, config: Config, command: str, timeout_sec: 
 
     unity_command = f'"{config.unity_path}" {command}'
     print("START UNITY with command:\n", unity_command.replace(' -', f'\n{" ":4}-'))
-    return execute_command_with_timeout(name, unity_command , timeout_sec)
+    return execute_command_with_timeout(name, unity_command, timeout_sec)
 
 
 def activate_unity_license(config: Config) -> int:
@@ -139,6 +139,7 @@ def deactivate_unity_license(config: Config) -> int:
 
     return execute_unity_command('Unity License Deactivation',
                                  config,
+                                 "",
                                  config.license_timeout_sec)
 
 

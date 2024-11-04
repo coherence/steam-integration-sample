@@ -34,7 +34,7 @@ class Config:
 
     @staticmethod
     def get_default_project_path(command: str):
-        return 'steam-integration-sample'
+        return '.'
 
 
 def get_common_unity_args() -> str:
@@ -207,7 +207,7 @@ def main():
                         choices=commands)
     parser.add_argument('-e', '--unity-path',
                         type=str, help='Path to Unity executable. Default is unity-editor on '
-                                       'Linux and first exec found in Hub directory on Windows')
+                                       'Linux')
     parser.add_argument('-l', '--unity-license-file',
                         type=str, help='Path to Unity license file')
     parser.add_argument('--project-path',

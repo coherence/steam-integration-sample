@@ -125,6 +125,7 @@ def activate_unity_license(config: Config) -> int:
     if config.license_file_exists:
         unity_args = f'-manualLicenseFile {config.unity_license_file}'
     else:
+        print(f'\nLicense file not found at path {config.unity_license_file}. ')
         return 0
 
     return execute_unity_command('Unity License Activation',
@@ -144,10 +145,6 @@ def deactivate_unity_license(config: Config) -> int:
 
 
 def execute_with_unity_license(config: Config, func: callable) -> int:
-    # for now, we don't need to activate the license on macOS
-    if platform.system() == DARWIN:
-        return func()
-
     rc = activate_unity_license(config)
     if rc != 0:
         return rc
@@ -183,8 +180,6 @@ def try_copy_test_results(src: str, dst: str):
 
 
 def run_project(config: Config) -> int:
-    initialize_and_bake(config)
-
     def func() -> int:
         command = (f'-projectPath {config.project_path} '
                    '-runTests '
@@ -200,25 +195,6 @@ def run_project(config: Config) -> int:
 
     return execute_with_unity_license(config, func)
 
-
-def initialize_and_bake(config: Config) -> int:
-    def func():
-        initialize_command = (f'-quit '
-                              f'-projectPath {config.project_path} '
-                              f'-executeMethod Coherence.Test.InEditor.Utils.InitializeProject')
-
-        rc = execute_unity_command("Initializing Project", config, initialize_command, config.bake_timeout_sec)
-        if rc != 0:
-            return rc
-
-        bake_command = (f'-quit '
-                        f'-projectPath {config.project_path} '
-                        f'-executeMethod Coherence.Test.InEditor.Utils.BakeProject')
-
-        rc = execute_unity_command("Baking Project", config, bake_command, config.bake_timeout_sec)
-        if rc != 0:
-            return rc
-    return execute_with_unity_license(config, func)
 
 def main():
 

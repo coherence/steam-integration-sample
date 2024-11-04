@@ -15,7 +15,7 @@ TEST_RESULTS = 'TestResults'
 
 class Config:
     TIMEOUT_EXIT_CODE = 124
-    _default_license_file = "Unity_v2020.x.ulf"
+    _default_license_file = ".ci/Unity_v2020.x.ulf"
 
     def __init__(self, args):
         self.project_path = args.project_path or Config.get_default_project_path(args.command)

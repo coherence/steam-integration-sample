@@ -184,7 +184,7 @@ def run_project(config: Config) -> int:
         command = (f'-projectPath {config.project_path} '
                    '-runTests '
                    '-testResults unit-test-results.xml '
-                   '-testPlatform EditMode')
+                   '-testPlatform PlayMode')
 
         rc = execute_unity_command("SDK unit tests", config, command, config.unity_timeout_sec)
 

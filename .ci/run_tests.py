@@ -22,9 +22,6 @@ class Config:
         self.unity_license_file = args.unity_license_file or Config._default_license_file
         self.license_file_exists = os.path.isfile(self.unity_license_file)
         self.unity_path = args.unity_path or Config.get_unity_path()
-        self.unity_username = args.unity_username
-        self.unity_password = args.unity_password
-        self.unity_serial = args.unity_serial
         self.bake_timeout_sec = args.bake_timeout_sec
         self.tests_timeout_sec = args.run_unity_timeout_sec
         self.license_timeout_sec = args.license_timeout_sec
@@ -38,16 +35,6 @@ class Config:
     @staticmethod
     def get_default_project_path(command: str):
         return 'steam-integration-sample'
-
-
-def mask_sensitive_info(text):
-    pattern = r"(?i)(-username|-password|-serial)\s+\S+"
-
-    def replace_sensitive_info(match):
-        # The match.group(1) is the keyword (username, password, or serial)
-        return f"{match.group(1)} ********"
-
-    return re.sub(pattern, replace_sensitive_info, text)
 
 
 def get_common_unity_args() -> str:
@@ -138,10 +125,7 @@ def activate_unity_license(config: Config) -> int:
     if config.license_file_exists:
         unity_args = f'-manualLicenseFile {config.unity_license_file}'
     else:
-        unity_args = (f'-username {config.unity_username} '
-                      f'-password {config.unity_password} '
-                      f'-serial {config.unity_serial} '
-                      f'-quit ')
+        return 0
 
     return execute_unity_command('Unity License Activation',
                                  config,
@@ -152,12 +136,7 @@ def activate_unity_license(config: Config) -> int:
 def deactivate_unity_license(config: Config) -> int:
     if config.license_file_exists:
         return 0
-
-    unity_args = (f'-returnLicense '
-                  f'-quit '
-                  f'-username {config.unity_username} '
-                  f'-password {config.unity_password} ')
-
+        
     return execute_unity_command('Unity License Deactivation',
                                  config,
                                  unity_args,

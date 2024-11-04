@@ -23,7 +23,7 @@ class Config:
         self.license_file_exists = os.path.isfile(self.unity_license_file)
         self.unity_path = args.unity_path or Config.get_unity_path()
         self.bake_timeout_sec = args.bake_timeout_sec
-        self.tests_timeout_sec = args.run_unity_timeout_sec
+        self.unity_timeout_sec = args.run_unity_timeout_sec
         self.license_timeout_sec = args.license_timeout_sec
 
     @staticmethod
@@ -136,7 +136,7 @@ def activate_unity_license(config: Config) -> int:
 def deactivate_unity_license(config: Config) -> int:
     if config.license_file_exists:
         return 0
-        
+
     return execute_unity_command('Unity License Deactivation',
                                  config,
                                  unity_args,
@@ -189,7 +189,7 @@ def run_project(config: Config) -> int:
                    '-testResults unit-test-results.xml '
                    '-testPlatform EditMode')
 
-        rc = execute_unity_command("SDK unit tests", config, command, config.tests_timeout_sec)
+        rc = execute_unity_command("SDK unit tests", config, command, config.unity_timeout_sec)
 
         if not os.path.isdir(TEST_RESULTS):
             os.makedirs(TEST_RESULTS)
@@ -236,6 +236,10 @@ def main():
                         type=str, help='Path to Unity project')
     parser.add_argument('--run-unity-timeout-sec',
                         type=int, help='Timeout in seconds for running Unity', default=600)
+    parser.add_argument('--bake-timeout-sec',
+                        type=int, help='Timeout in seconds for baking RSL code', default=240)
+    parser.add_argument('--license-timeout-sec',
+                        type=int, help='Timeout in seconds for activating license', default=60)
 
 
     args = parser.parse_args()

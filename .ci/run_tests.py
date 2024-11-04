@@ -183,6 +183,8 @@ def try_copy_test_results(src: str, dst: str):
 
 
 def run_project(config: Config) -> int:
+    initialize_and_bake(config)
+
     def func() -> int:
         command = (f'-projectPath {config.project_path} '
                    '-runTests '

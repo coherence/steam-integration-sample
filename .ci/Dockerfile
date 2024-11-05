@@ -20,7 +20,5 @@ RUN apt-get install -y dotnet-sdk-6.0
 COPY *.ulf ./
 COPY sdk sdk
 
-WORKDIR .
-
 # -u flag is needed to avoid buffering output
 ENTRYPOINT [ "python3", "-u", ".ci/run_tests.py" ]

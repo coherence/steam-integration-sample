@@ -82,7 +82,7 @@ def str_to_bool(value: str):
 
 
 def get_default_workdir():
-    return "."
+    return "/"
 
 
 def common_docker_run_args(parser):

@@ -19,7 +19,6 @@ RUN apt-get install -y dotnet-sdk-6.0
 
 COPY *.ulf ./
 COPY sdk sdk
-COPY steam-integration-sample steam-integration-sample
 
 WORKDIR .
 

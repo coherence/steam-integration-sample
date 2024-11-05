@@ -21,7 +21,7 @@ COPY *.ulf ./
 COPY sdk sdk
 COPY steam-integration-sample steam-integration-sample
 
-WORKDIR steam-integration-sample
+WORKDIR .
 
 # -u flag is needed to avoid buffering output
 ENTRYPOINT [ "python3", "-u", ".ci/run_tests.py" ]

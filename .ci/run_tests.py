@@ -8,9 +8,7 @@ import sys
 from threading import Thread
 
 
-DARWIN = 'Darwin'
 LINUX = 'Linux'
-WINDOWS = 'Windows'
 TEST_RESULTS = 'TestResults'
 
 class Config:
@@ -53,7 +51,7 @@ def read_pipe(pipe):
                 print(f'{line}')
 
 
-def terminate_timedout_process(process: subprocess.Popen, name: str):
+def terminate_timeout_process(process: subprocess.Popen, name: str):
     process.terminate()
 
     try:
@@ -99,7 +97,7 @@ def execute_command_with_timeout(name: str, command: str, timeout_sec: int) -> i
         rc = process.poll()
     except subprocess.TimeoutExpired:
         print(f'\n\n{name} timed out after {timeout_sec} seconds. Terminating\n', file=sys.stderr)
-        terminate_timedout_process(process, name)
+        terminate_timeout_process(process, name)
         read_thread.join(10)
 
         rc = Config.TIMEOUT_EXIT_CODE
@@ -206,8 +204,7 @@ def main():
                         help=f'Command to run: {commands}',
                         choices=commands)
     parser.add_argument('-e', '--unity-path',
-                        type=str, help='Path to Unity executable. Default is unity-editor on '
-                                       'Linux')
+                        type=str, help='Path to Unity executable. Default is unity-editor on Linux')
     parser.add_argument('-l', '--unity-license-file',
                         type=str, help='Path to Unity license file')
     parser.add_argument('--project-path',

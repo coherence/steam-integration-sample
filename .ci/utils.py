@@ -67,10 +67,6 @@ def docker_run_steam_sample(args):
     sys.exit(proc.returncode)
 
 
-def to_lowercase(value: str):
-    return value.lower()
-
-
 def str_to_bool(value: str):
     value = value.lower()
     if value in ['true', '1', 't', 'y', 'yes']:

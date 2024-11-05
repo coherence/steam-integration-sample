@@ -82,7 +82,7 @@ def str_to_bool(value: str):
 
 
 def get_default_workdir():
-    return "/steam-integration-sample"
+    return "."
 
 
 def common_docker_run_args(parser):
@@ -109,7 +109,7 @@ def main():
                                  default="sdk/.Runtime")
 
     def get_default_volumes():
-        container_dir = "/steam-integration-sample/TestResults"
+        container_dir = "/TestResults"
         return [f'{os.path.join(os.getcwd(), "TestResults")}:{container_dir}']
 
     # Docker build command
@@ -118,7 +118,7 @@ def main():
     docker_build_parser.add_argument('-b', '--unity-image-base', help='Unity image base')
     docker_build_parser.add_argument('-t', '--tag', help='Docker image tag', default="steam")
     docker_build_parser.add_argument('-f', '--dockerfile', help='Dockerfile path',
-                                     default=f"steam-integration-sample/.ci/Dockerfile")
+                                     default=f".ci/Dockerfile")
 
     # Docker run command
     docker_run_parser = command.add_parser("docker-run-steam-sample", help="Run docker image for Steam Sample project")

@@ -28,6 +28,7 @@ namespace SteamSample
         public TransportState State { get; private set; }
         public bool IsReliable => false;
         public bool CanSend => true;
+        public string Description => "Steam";
 
         private readonly IStats stats;
         private readonly Logger logger;
@@ -135,7 +136,8 @@ namespace SteamSample
                 // This prevents ClientCore from trying and failing to send a DisconnectRequest
                 logger.Info($"OnDisconnected: Connection closed by host");
                 OnError?.Invoke(new ConnectionDeniedException(ConnectionCloseReason.GracefulClose));
-            } else
+            }
+            else
             {
                 logger.Info($"OnDisconnected: {info.State}: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason})");
                 OnError?.Invoke(new SteamConnectionException(info));
@@ -146,7 +148,7 @@ namespace SteamSample
         {
             // Copy packet data into managed byte array
             var packet = new byte[size];
-            Marshal.Copy(data, packet, 0 , size);
+            Marshal.Copy(data, packet, 0, size);
 
             incomingPackets.Enqueue(packet);
         }

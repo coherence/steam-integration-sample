@@ -122,7 +122,7 @@ namespace SteamSample
 
         void OnDestroy()
         {
-            if(replicationServer != null)
+            if (replicationServer != null)
             {
                 replicationServer.Stop();
             }
@@ -204,7 +204,7 @@ namespace SteamSample
             // Make sure we are not already hosting or joining a game
             if (bridge.IsConnected || bridge.IsConnecting)
             {
-                throw new Exception("Failed to host game, CoherenceBride is already connected.");
+                throw new Exception("Failed to host game, CoherenceBridge is already connected.");
             }
 
             // Init SteamServer

@@ -9,6 +9,7 @@ using Coherence.Brook;
 using Coherence.Brook.Octet;
 using Coherence.Common;
 using Coherence.Connection;
+using Coherence.Log;
 using Coherence.Stats;
 using Coherence.Transport;
 using Steamworks;
@@ -70,7 +71,7 @@ namespace SteamSample
 
             if (State == TransportState.Closed)
             {
-                logger.Warning("SteamTransport is already closed");
+                logger.Warning(Warning.SteamTransportAlreadyClosed);
                 return;
             }
 
@@ -91,7 +92,9 @@ namespace SteamSample
             var result = steamRelayConnection.Connection.SendMessage(buffer.Array, buffer.Offset, buffer.Count, sendType);
             if (result != Result.OK)
             {
-                logger.Error($"Failed to send Steam packet to #{HostSteamId} with result: {result}");
+                logger.Error(Error.SteamFailedToSendPacket,
+                    ("Result", result),
+                    ("TargetSteamId", HostSteamId));
             }
 
             stats.TrackOutgoingPacket(stream.Position);

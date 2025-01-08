@@ -87,7 +87,7 @@ namespace SteamSample
 
             if (!connectionMap.TryGetValue(steamConnection, out var relayConnection))
             {
-                logger.Error($"Failed to find client for connection with Id: {steamConnection.Id}");
+                logger.Error(Error.SteamClientNotFound, ("SteamConnectionId", steamConnection.Id));
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace SteamSample
 
             if (!connectionMap.TryGetValue(steamConnection, out var relayConnection))
             {
-                logger.Error($"Failed to find client for connection with Id: {steamConnection.Id}");
+                logger.Error(Error.SteamClientNotFound, ("SteamConnectionId", steamConnection.Id));
                 return;
             }
 

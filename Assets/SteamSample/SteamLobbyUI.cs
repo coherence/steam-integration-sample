@@ -102,7 +102,7 @@ namespace SteamSample
             // SteamClient must be initialized before we can use SteamMatchmaking
             if (!SteamClient.IsValid)
             {
-                logger.Error("Lobbies refresh failed: SteamClient not initialized");
+                logger.Error(Error.SteamLobbiesRefreshFailed, ("SteamClient.IsValid", SteamClient.IsValid));
                 return;
             }
 
@@ -123,7 +123,9 @@ namespace SteamSample
             }
             catch (Exception exception)
             {
-                logger.Error($"Lobbies refresh failed: {exception}");
+                logger.Error(Error.SteamLobbiesRefreshFailed,
+                    ("SteamClient.IsValid", SteamClient.IsValid),
+                    ("Exception", exception));
             }
             
             refreshInProgress = false;

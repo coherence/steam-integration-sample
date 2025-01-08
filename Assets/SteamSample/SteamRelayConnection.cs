@@ -37,7 +37,7 @@ namespace SteamSample
             var result = steamConnection.Close();
             if (!result)
             {
-                logger.Error($"Failed to close Steam relay connection");
+                logger.Error(Error.SteamFailedToCloseRelay);
             }
 
             messagesFromSteamToServer.Clear();
@@ -53,7 +53,7 @@ namespace SteamSample
             var result = steamConnection.SendMessage(outgoingPacketBuffer, 0, packetData.Length, sendType);
             if (result != Result.OK)
             {
-                logger.Error($"Sending message to {steamConnection.ConnectionName} failed with result: {result}");
+                logger.Error(Error.SteamFailedToSendMessage, ("Result", result));
             }
         }
 

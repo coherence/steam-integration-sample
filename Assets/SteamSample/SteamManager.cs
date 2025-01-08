@@ -90,9 +90,12 @@ namespace SteamSample
             if (!SteamClient.IsValid)
             {
                 SteamClient.Init(steamAppId, false);
-                Dispatch.OnException += exception => logger.Error($"Internal SteamAPI exception: {exception}");
+                Dispatch.OnException += exception => logger.Error(Error.SteamInternalError, ("Exception", exception));
                 SteamNetworking.AllowP2PPacketRelay(true); // Enable relay, if NAT punchthrough fails
-                SteamNetworking.OnP2PConnectionFailed += (sid, err) => logger.Error($"P2P Connection Failed: {sid} {err}");
+                SteamNetworking.OnP2PConnectionFailed +=
+                    (sid, err) => logger.Error(Error.SteamP2PConnectionFailed,
+                        ("SteamID", sid),
+                        ("P2PSessionError", err));
                 SteamNetworkingUtils.InitRelayNetworkAccess();
             }
 
@@ -189,7 +192,8 @@ namespace SteamSample
             }
             else
             {
-                logger.Error($"Failed to get game server SteamID for lobby {lobby.Id}");
+                logger.Error(Error.SteamFailedToGetLobbyGameServer,
+                    ("LobbyId", lobby.Id));
             }
         }
 
@@ -267,7 +271,7 @@ namespace SteamSample
 
         void OnConnectionError(CoherenceBridge _, ConnectionException exception)
         {
-            logger.Error($"CoherenceBridge OnConnectionError: {exception}");
+            logger.Error(Error.ToolkitBridgeConnectionError, ("Exception", exception));
             Shutdown();
         }
 
@@ -281,14 +285,14 @@ namespace SteamSample
                 {
                     if (task.IsFaulted)
                     {
-                        logger.Error($"Lobby creation failed: {task.Exception}");
+                        logger.Error(Error.SteamLobbyCreationFailed, ("Exception", task.Exception));
                         return;
                     }
 
                     Lobby? lobby = task.Result;
                     if (!lobby.HasValue)
                     {
-                        logger.Error($"Lobby creation failed");
+                        logger.Error(Error.SteamLobbyCreationFailed);
                         return;
                     }
 
@@ -326,7 +330,7 @@ namespace SteamSample
         {
             if (replicationServer != null)
             {
-                logger.Warning("The replication server is already running");
+                logger.Warning(Warning.ReplicationServerAlreadyRunning);
                 return;
             }
 

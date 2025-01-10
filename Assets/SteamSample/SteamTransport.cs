@@ -19,9 +19,13 @@ namespace SteamSample
 {
     public class SteamTransport : ITransport, IConnectionManager
     {
+        // We need header size matching the header size on the host side, otherwise
+        // we risk sending packets bigger than MTU allowed between host and RS.
+        internal const int HeaderSizeBytes = UdpTransport.HeaderSizeBytes;
+
         public SteamId HostSteamId;
 
-        public int HeaderSize => 0;
+        public int HeaderSize => HeaderSizeBytes;
         public event Action OnOpen;
         public event Action<ConnectionException> OnError;
 

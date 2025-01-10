@@ -98,9 +98,13 @@ namespace SteamSample
 
         public void OnMessage(Connection steamConnection, NetIdentity identity, IntPtr data, int size, long messageNum, long recvTime, int channel)
         {
-            // Copy packet data into managed byte array
-            var packet = new byte[size];
-            Marshal.Copy(data, packet, 0 , size);
+            // Copy packet data into managed byte array.
+            // The reason for skipping the header is, SteamTransport pads the message with UDP transport header.
+            // This is done to match the UDP transport MTU, otherwise SteamTransport could send a 1280 bytes packet
+            // which would require 1284 bytes in UDP transport, thus would be unsendable to RS on the host.
+            var headerlessSize = size - SteamTransport.HeaderSizeBytes;
+            var packet = new byte[headerlessSize];
+            Marshal.Copy(data + SteamTransport.HeaderSizeBytes, packet, 0, headerlessSize);
 
             if (!connectionMap.TryGetValue(steamConnection, out var relayConnection))
             {

@@ -199,7 +199,10 @@ namespace SteamSample
 
         public void HostGame(bool withLobby)
         {
-            StartReplicationServer();
+            if (!StartReplicationServer())
+            {
+                throw new Exception("Failed to host game, couldn't start Replication Server");
+            }
 
             this.hostWithLobby = withLobby;
 
@@ -326,12 +329,12 @@ namespace SteamSample
             }
         }
 
-        void StartReplicationServer()
+        bool StartReplicationServer()
         {
             if (replicationServer != null)
             {
                 logger.Warning(Warning.ReplicationServerAlreadyRunning);
-                return;
+                return false;
             }
 
             var config = new ReplicationServerConfig
@@ -351,7 +354,7 @@ namespace SteamSample
             replicationServer = Launcher.Create(config, $"--log-file \"{logFilePath}\"");
             replicationServer.OnLog += ReplicationServer_OnLog;
             replicationServer.OnExit += ReplicationServer_OnExit;
-            replicationServer.Start();
+            return replicationServer.Start();
         }
 
         void StopReplicationServer()

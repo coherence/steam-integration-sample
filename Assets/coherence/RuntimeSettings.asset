@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b91f942a5214496b0e11eaedb54c36, type: 3}
   m_Name: RuntimeSettings
   m_EditorClassIdentifier: 
-  schemaID: d2e00296c2dc13dd9c1721b72092eac2904616b0
+  schemaID: 2df6c3f5be4b05afc407f017cd497d8af3b7185d
   versionInfo: {fileID: 11400000, guid: 2191b6f902c97477baa32a7919010503, type: 2}
   runtimeKey: 
   simulatorSlug: 
@@ -31,8 +31,15 @@ MonoBehaviour:
   organizationID: 
   projectID: 
   projectName: 
+  organizationName: 
   transportType: 0
   transportConfiguration: 0
+  advancedSettings:
+    ThreadResumer:
+      Enabled: 1
+      SearchIntervalMs: 50
+      LongSearchWarnThresholdMs: 50
+      WarnOnSuspension: 1
   replicationServerToken: 
   playApiEndpoint: https://api.prod.coherence.io/v1/play
   schemas:
@@ -41,3 +48,4 @@ MonoBehaviour:
   extraSchemas: []
   defaultTransportMode: 0
   defaultTransportModeMigrated: 1
+  defaultAuthorityTransferType: 2

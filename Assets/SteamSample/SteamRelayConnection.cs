@@ -4,6 +4,7 @@ using Coherence.Toolkit.Relay;
 using Steamworks;
 using Steamworks.Data;
 using Coherence.Log;
+using UnityEngine;
 using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
@@ -14,13 +15,9 @@ namespace SteamSample
         private readonly Queue<ArraySegment<byte>> messagesFromSteamToServer = new Queue<ArraySegment<byte>>();
         private readonly byte[] outgoingPacketBuffer = new byte[1024 * 4];
 
-        private static readonly Logger logger = Log.GetLogger<SteamRelayConnection>();
-
         public SteamRelayConnection(Connection steamConnection)
         {
-            logger.UseWatermark = false;
-
-            logger.Info($"Opening relayed client for Steam user #{steamConnection.ConnectionName}");
+            Debug.Log($"Opening relayed client for Steam user #{steamConnection.ConnectionName}");
 
             this.steamConnection = steamConnection;
         }
@@ -32,12 +29,10 @@ namespace SteamSample
 
         public void OnConnectionClosed()
         {
-            logger.Info($"Closing relayed client for Steam user {steamConnection.ConnectionName}");
-
             var result = steamConnection.Close();
             if (!result)
             {
-                logger.Error(Error.SteamFailedToCloseRelay);
+                Debug.LogError("Failed to close Steam relay connection.");
             }
 
             messagesFromSteamToServer.Clear();
@@ -53,7 +48,7 @@ namespace SteamSample
             var result = steamConnection.SendMessage(outgoingPacketBuffer, 0, packetData.Length, sendType);
             if (result != Result.OK)
             {
-                logger.Error(Error.SteamFailedToSendMessage, ("Result", result));
+                Debug.LogError($"Failed to send message to Steam client.\nResult: {result}\nSend Type: {sendType}\nSteam Connection ID: {steamConnection.Id}");
             }
         }
 

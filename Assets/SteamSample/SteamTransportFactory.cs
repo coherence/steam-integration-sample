@@ -16,7 +16,7 @@ namespace SteamSample
 
         public ITransport Create(ushort mtu, IStats stats, Logger logger)
         {
-            return new SteamTransport(stats, logger)
+            return new SteamTransport(stats)
             {
                 HostSteamId = hostSteamId
             };

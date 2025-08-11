@@ -4,8 +4,7 @@ using System.Runtime.InteropServices;
 using Coherence.Toolkit.Relay;
 using Steamworks;
 using Steamworks.Data;
-using Coherence.Log;
-using Logger = Coherence.Log.Logger;
+using UnityEngine;
 
 namespace SteamSample
 {
@@ -13,8 +12,6 @@ namespace SteamSample
     {
         private readonly Dictionary<Connection, SteamRelayConnection> connectionMap = new Dictionary<Connection, SteamRelayConnection>();
         private SocketManager steamSocketManager;
-
-        private static readonly Logger logger = Log.GetLogger<SteamRelay>();
 
         ////////////////////////////////////////////////
         // ICoherenceRelayManager
@@ -24,8 +21,6 @@ namespace SteamSample
 
         public void Open()
         {
-            logger.UseWatermark = false;
-
             steamSocketManager = SteamNetworkingSockets.CreateRelaySocket(0, this);
         }
 
@@ -45,7 +40,6 @@ namespace SteamSample
         {
             if (SteamServer.IsValid)
             {
-                logger.Info("SteamServer Shutdown");
                 SteamServer.Shutdown();
             }
 
@@ -62,7 +56,7 @@ namespace SteamSample
 
         public void OnConnecting(Connection steamConnection, ConnectionInfo info)
         {
-            logger.Info($"OnConnecting {steamConnection.Id}");
+            Debug.Log($"SteamRelay.OnConnecting #{steamConnection.Id}");
 
             steamConnection.ConnectionName = $"#{info.Identity.SteamId}";
             var relayConnection = new SteamRelayConnection(steamConnection);
@@ -73,21 +67,16 @@ namespace SteamSample
 
         public void OnConnected(Connection steamConnection, ConnectionInfo info)
         {
-            logger.Info($"OnConnected");
+            Debug.Log($"SteamRelay.OnConnected #{steamConnection.Id}");
         }
 
         public void OnDisconnected(Connection steamConnection, ConnectionInfo info)
         {
-            logger.Info($"OnDisconnected: {info.State} EndReason: {info.EndReason} ({(int)info.EndReason}) Address: {info.Address} Identity: {info.Identity}");
-
-            if (info.EndReason == NetConnectionEnd.App_Min)
-            {
-                logger.Info($"Steam client #{steamConnection.Id} closed connection gracefully");
-            }
+            Debug.Log($"SteamRelay.OnDisconnected #{steamConnection.Id}: {info.State} EndReason: {info.EndReason} ({(int)info.EndReason}) Address: {info.Address} Identity: {info.Identity}");
 
             if (!connectionMap.TryGetValue(steamConnection, out var relayConnection))
             {
-                logger.Error(Error.SteamClientNotFound, ("SteamConnectionId", steamConnection.Id));
+                Debug.LogError($"Steam client #{steamConnection.Id} not found in connection map.");
                 return;
             }
 
@@ -108,7 +97,7 @@ namespace SteamSample
 
             if (!connectionMap.TryGetValue(steamConnection, out var relayConnection))
             {
-                logger.Error(Error.SteamClientNotFound, ("SteamConnectionId", steamConnection.Id));
+                Debug.Log($"SteamRelay.OnMessage: Steam client #{steamConnection.Id} not found in connection map.");
                 return;
             }
 

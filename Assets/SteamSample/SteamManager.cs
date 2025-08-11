@@ -30,9 +30,6 @@ namespace SteamSample
         bool hostWithLobby;
         IReplicationServer replicationServer;
 
-        private static readonly Logger logger = Log.GetLogger<SteamManager>();
-        private static readonly Logger rsLogger = Log.GetLogger<ReplicationServer>();
-
         void Start()
         {
             // Make sure the scene contains a CoherenceBridge
@@ -40,9 +37,6 @@ namespace SteamSample
             {
                 throw new Exception("Could not find a CoherenceBridge in the scene.");
             }
-
-            logger.UseWatermark = false;
-            rsLogger.UseWatermark = false;
 
             // Listen for connection events
             bridge.onConnected.AddListener(OnConnected);
@@ -90,16 +84,13 @@ namespace SteamSample
             if (!SteamClient.IsValid)
             {
                 SteamClient.Init(steamAppId, false);
-                Dispatch.OnException += exception => logger.Error(Error.SteamInternalError, ("Exception", exception));
+                Dispatch.OnException += Debug.LogException;
                 SteamNetworking.AllowP2PPacketRelay(true); // Enable relay, if NAT punchthrough fails
-                SteamNetworking.OnP2PConnectionFailed +=
-                    (sid, err) => logger.Error(Error.SteamP2PConnectionFailed,
-                        ("SteamID", sid),
-                        ("P2PSessionError", err));
+                SteamNetworking.OnP2PConnectionFailed += (sid, err) => Debug.LogError($"P2P connection failed\nSteamID: {sid}\nP2PSessionError: {err}");
                 SteamNetworkingUtils.InitRelayNetworkAccess();
             }
 
-            logger.Info($"You are logged in to Steam with SteamID #{SteamClient.SteamId}");
+            Debug.Log($"You are logged in to Steam with SteamID #{SteamClient.SteamId}");
         }
 
         void Update()
@@ -152,7 +143,7 @@ namespace SteamSample
                 steamIdToJoin = steamId.Value;
             }
 
-            logger.Info($"Joining game with SteamID #{steamIdToJoin}");
+            Debug.Log($"Joining game with SteamID #{steamIdToJoin}");
 
             hostWithLobby = false;
 
@@ -192,8 +183,7 @@ namespace SteamSample
             }
             else
             {
-                logger.Error(Error.SteamFailedToGetLobbyGameServer,
-                    ("LobbyId", lobby.Id));
+                Debug.LogError($"Failed to get game server from lobby {lobby.Id}.");
             }
         }
 
@@ -204,9 +194,9 @@ namespace SteamSample
                 throw new Exception("Failed to host game, couldn't start Replication Server");
             }
 
-            this.hostWithLobby = withLobby;
+            hostWithLobby = withLobby;
 
-            logger.Info($"Hosting game with SteamID #{SteamClient.SteamId}");
+            Debug.Log($"Hosting game with SteamID #{SteamClient.SteamId}");
 
             // Make sure we are not already hosting or joining a game
             if (bridge.IsConnected || bridge.IsConnecting)
@@ -217,7 +207,7 @@ namespace SteamSample
             // Init SteamServer
             var serverInit = new SteamServerInit(Application.productName, Application.productName);
             SteamServer.Init(SteamClient.AppId, serverInit, false);
-            logger.Info($"SteamServer initialized");
+            Debug.Log($"SteamServer initialized");
 
             // Init Steam Relay
             bridge.SetRelay(new SteamRelay());
@@ -242,8 +232,6 @@ namespace SteamSample
         [ContextMenu("Disconnect")]
         public void Disconnect()
         {
-            logger.Info("Disconnecting");
-
             if (!bridge.IsConnected && !bridge.IsConnecting)
             {
                 throw new Exception("Failed to disconnect, CoherenceBridge is not connected");
@@ -259,7 +247,6 @@ namespace SteamSample
 
         void OnConnected(CoherenceBridge _)
         {
-            logger.Info("CoherenceBridge OnConnected");
             if (hostWithLobby)
             {
                 CreateLobby();
@@ -268,40 +255,35 @@ namespace SteamSample
 
         void OnDisconnected(CoherenceBridge _, ConnectionCloseReason reason)
         {
-            logger.Info($"CoherenceBridge OnDisconnected: {reason}");
             Shutdown();
         }
 
         void OnConnectionError(CoherenceBridge _, ConnectionException exception)
         {
-            logger.Error(Error.ToolkitBridgeConnectionError, ("Exception", exception));
+            Debug.LogException(exception);
             Shutdown();
         }
 
         void CreateLobby()
         {
-            logger.Info($"Creating lobby");
-
             SteamMatchmaking
                 .CreateLobbyAsync()
                 .ContinueWith(task =>
                 {
                     if (task.IsFaulted)
                     {
-                        logger.Error(Error.SteamLobbyCreationFailed, ("Exception", task.Exception));
+                        Debug.LogException(task.Exception);
                         return;
                     }
 
-                    Lobby? lobby = task.Result;
+                    var lobby = task.Result;
                     if (!lobby.HasValue)
                     {
-                        logger.Error(Error.SteamLobbyCreationFailed);
+                        Debug.LogError("Lobby creation failed.");
                         return;
                     }
 
                     activeLobby = lobby;
-
-                    logger.Info($"Lobby created successfully");
 
                     lobby.Value.SetGameServer(SteamClient.SteamId);
                     lobby.Value.SetJoinable(true);
@@ -333,7 +315,7 @@ namespace SteamSample
         {
             if (replicationServer != null)
             {
-                logger.Warning(Warning.ReplicationServerAlreadyRunning);
+                Debug.LogWarning("Replication server is already running.");
                 return false;
             }
 
@@ -365,12 +347,12 @@ namespace SteamSample
 
         void ReplicationServer_OnLog(string log)
         {
-            rsLogger.Info(log);
+            Debug.Log($"<color=cyan>{log}</color>");
         }
 
         void ReplicationServer_OnExit(int code)
         {
-            logger.Info($"Replication server exited with code {code}.");
+            Debug.Log($"Replication server exited with code {code}.");
             replicationServer = null;
         }
     }

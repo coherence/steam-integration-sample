@@ -20,7 +20,8 @@
     "precompiledReferences": [
         "Facepunch.Steamworks.Win32.dll",
         "Facepunch.Steamworks.Win64.dll",
-        "Facepunch.Steamworks.Posix.dll"
+        "Facepunch.Steamworks.Posix.dll",
+        "Facepunch.Steamworks.Posix.MacOS.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

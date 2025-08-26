@@ -9,12 +9,11 @@ using Coherence.Brook;
 using Coherence.Brook.Octet;
 using Coherence.Common;
 using Coherence.Connection;
-using Coherence.Log;
 using Coherence.Stats;
 using Coherence.Transport;
 using Steamworks;
 using Steamworks.Data;
-using Logger = Coherence.Log.Logger;
+using UnityEngine;
 
 namespace SteamSample
 {
@@ -36,15 +35,13 @@ namespace SteamSample
         public string Description => "Steam";
 
         private readonly IStats stats;
-        private readonly Logger logger;
         private ConnectionManager steamRelayConnection;
         private readonly Queue<byte[]> incomingPackets = new Queue<byte[]>();
         private bool isClosing;
 
-        public SteamTransport(IStats stats, Logger logger)
+        public SteamTransport(IStats stats)
         {
             this.stats = stats;
-            this.logger = logger.With<SteamTransport>();
             isClosing = false;
         }
 
@@ -54,8 +51,6 @@ namespace SteamSample
             {
                 throw new Exception("SteamClient not initialized");
             }
-
-            logger.Info($"Opening outgoing Steam connection.");
 
             steamRelayConnection = SteamNetworkingSockets.ConnectRelay(HostSteamId, 0, this);
 
@@ -71,11 +66,9 @@ namespace SteamSample
 
         public void Close()
         {
-            logger.Info("Closing SteamTransport");
-
             if (State == TransportState.Closed)
             {
-                logger.Warning(Warning.SteamTransportAlreadyClosed);
+                Debug.LogWarning("SteamTransport.Close: Already closed. Ignoring.");
                 return;
             }
 
@@ -96,9 +89,11 @@ namespace SteamSample
             var result = steamRelayConnection.Connection.SendMessage(buffer.Array, buffer.Offset, buffer.Count, sendType);
             if (result != Result.OK)
             {
-                logger.Error(Error.SteamFailedToSendPacket,
-                    ("Result", result),
-                    ("TargetSteamId", HostSteamId));
+                Debug.LogError("Failed to send packet to Steam host.\n" +
+                               $"Result: {result}\n" +
+                               $"Send Type: {sendType}\n" +
+                               $"Target Steam ID: {HostSteamId}\n" +
+                               $"Steam Connection ID: {steamRelayConnection.Connection.Id}");
             }
 
             stats.TrackOutgoingPacket(stream.Position);
@@ -108,7 +103,7 @@ namespace SteamSample
         {
             if (!SteamClient.IsValid)
             {
-                OnError?.Invoke(new ConnectionException($"SteamClient is not valid"));
+                OnError?.Invoke(new ConnectionException("SteamClient is not valid"));
                 return;
             }
 
@@ -125,12 +120,12 @@ namespace SteamSample
 
         public void OnConnecting(ConnectionInfo info)
         {
-            logger.Info($"OnConnecting: {info.State}");
+            Debug.Log($"SteamTransport.OnConnecting: {info.State}");
         }
 
         public void OnConnected(ConnectionInfo info)
         {
-            logger.Info($"OnConnected: {info.State}");
+            Debug.Log($"SteamTransport.OnConnected: {info.State}");
             State = TransportState.Open;
         }
 
@@ -141,12 +136,12 @@ namespace SteamSample
             {
                 // ConnectionDeniedException translates to serverInitiated=true in ClientCore
                 // This prevents ClientCore from trying and failing to send a DisconnectRequest
-                logger.Info($"OnDisconnected: Connection closed by host");
+                Debug.Log("SteamTransport.OnDisconnected: Connection closed by host");
                 OnError?.Invoke(new ConnectionDeniedException(ConnectionCloseReason.GracefulClose));
             }
             else
             {
-                logger.Info($"OnDisconnected: {info.State}: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason})");
+                Debug.Log($"SteamTransport.OnDisconnected: {info.State}: {SteamConnectionException.GetEndReasonString(info)} ({(int)info.EndReason})");
                 OnError?.Invoke(new SteamConnectionException(info));
             }
         }

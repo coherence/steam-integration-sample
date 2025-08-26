@@ -16,7 +16,7 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [
         "Facepunch.Steamworks.Win32.dll",
         "Facepunch.Steamworks.Win64.dll",

@@ -136,7 +136,7 @@ namespace SteamSample
             }
         }
 
-        public void JoinGame(SteamId? steamId = null)
+        public void JoinGame(SteamId? steamId)
         {
             if (steamId.HasValue)
             {
@@ -175,15 +175,22 @@ namespace SteamSample
             SteamId serverId = default;
 
             // Get the game server SteamID for that lobby and join
-            if (lobby.GetGameServer(ref ip, ref port, ref serverId))
+            if(!lobby.GetGameServer(ref ip, ref port, ref serverId))
             {
-                lobby.Join();
-                activeLobby = lobby;
-                JoinGame(serverId);
+	            Debug.LogError($"Failed to get game server from lobby {lobby.Id}.");
+	            return;
             }
-            else
+
+            lobby.Join();
+            activeLobby = lobby;
+            try
             {
-                Debug.LogError($"Failed to get game server from lobby {lobby.Id}.");
+	            JoinGame(serverId);
+            }
+            catch
+            {
+	            activeLobby = null;
+	            throw;
             }
         }
 

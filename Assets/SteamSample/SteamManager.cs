@@ -6,12 +6,10 @@ using Coherence;
 using Coherence.Connection;
 using Coherence.Toolkit;
 using Coherence.Toolkit.ReplicationServer;
+using Coherence.Transport;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
-using Coherence.Log;
-using Coherence.Transport;
-using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
 {
@@ -136,7 +134,7 @@ namespace SteamSample
             }
         }
 
-        public void JoinGame(SteamId? steamId = null)
+        public void JoinGame(SteamId? steamId)
         {
             if (steamId.HasValue)
             {
@@ -175,15 +173,22 @@ namespace SteamSample
             SteamId serverId = default;
 
             // Get the game server SteamID for that lobby and join
-            if (lobby.GetGameServer(ref ip, ref port, ref serverId))
-            {
-                lobby.Join();
-                activeLobby = lobby;
-                JoinGame(serverId);
-            }
-            else
+            if (!lobby.GetGameServer(ref ip, ref port, ref serverId))
             {
                 Debug.LogError($"Failed to get game server from lobby {lobby.Id}.");
+                return;
+            }
+
+            lobby.Join();
+            activeLobby = lobby;
+            try
+            {
+                JoinGame(serverId);
+            }
+            catch
+            {
+                activeLobby = null;
+                throw;
             }
         }
 

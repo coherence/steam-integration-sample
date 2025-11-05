@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
-using Coherence.Log;
-using Logger = Coherence.Log.Logger;
 
 namespace SteamSample
 {
@@ -14,16 +12,11 @@ namespace SteamSample
         public bool showLobbyUI = true;
 
         SteamManager steamManager;
-        List<Lobby> lobbies = new List<Lobby>();
+        List<Lobby> lobbies = new();
         Vector2 scrollBarPosition;
         bool refreshInProgress;
 
-        private static readonly Logger logger = Log.GetLogger<SteamLobbyUI>();
-
-        void Awake()
-        {
-            steamManager = GetComponent<SteamManager>();
-        }
+        void Awake() => steamManager = GetComponent<SteamManager>();
 
         void OnGUI()
         {

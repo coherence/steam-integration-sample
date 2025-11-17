@@ -332,7 +332,6 @@ namespace SteamSample
                 SignallingPort = 32002,
                 SendFrequency = 20,
                 ReceiveFrequency = 60,
-                Token = RuntimeSettings.Instance.ReplicationServerToken,
                 DisableThrottling = true,
             };
 

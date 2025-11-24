@@ -21,7 +21,7 @@ namespace SteamSample
     {
         // We need header size matching the header size on the host side, otherwise
         // we risk sending packets bigger than MTU allowed between host and RS.
-        internal const int HeaderSizeBytes = UdpTransport.HeaderSizeBytes;
+        internal const int HeaderSizeBytes = UdpTransportV2.HeaderSizeBytes;
 
         public SteamId HostSteamId;
 

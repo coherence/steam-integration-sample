@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b58ca8e478745dfab801a85671962e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showHubSectionInfo: 1
-  showHubModuleDescription: 1
-  showHubMessageAreas: 1
+  showHubModuleQuickHelp: 1
   portalToken: 
   worldUDPPort: 32001
   worldWebPort: 32002
@@ -22,16 +20,63 @@ MonoBehaviour:
   roomsWebPort: 42002
   sendFrequency: 20
   recvFrequency: 60
+  localRoomsCleanupTimeSeconds: 120
+  localWorldHostAuthority: 0
   rsConsoleLogLevel: 2
   rsLogToFile: 0
   rsLogFilePath: Logs/rs_logs.txt
   rsFileLogLevel: 1
-  runtimeSettingsGuid: 9b6662b220e56bb498779db0e94a7cbc
-  schemaBakeGenerateAsmdef: 0
   reportAnalytics: 1
-  useToolkit: 1
-  useCoherenceSyncSchema: 1
-  useCustomSchemas: 0
   RSBundlingEnabled: 1
   keepConnectionAlive: 0
   activeSchemas: []
+  organization:
+    id: cq1vofa2t1cuokp9rik0
+    name: sloan-sdk
+    slug: sloan-sdk
+    projects:
+    - id: cq1vofa2t1cuokp9rikg
+      portal_token: fb676093c7114348835365aae88b0185
+      runtime_key: 5ec21cd579b34641b5c46509e8cad805
+      name: Default Project
+    - id: cv0ol8pj0c7aktei5ljg
+      portal_token: 5182cc630a7b49078bc2ca0f48884b8d
+      runtime_key: 4f9618e8882b406381d12e44b0c44303
+      name: minijam-feb28
+    - id: cs4ehlf088d66d5dbmig
+      portal_token: cc41ee53542445ed811ef99b267c4fda
+      runtime_key: 3eda40e5b8204cf2a5fd93127038275f
+      name: OrderedCommandsGameJam
+    - id: cugvp09j0c7f6v5qvgqg
+      portal_token: 3f64c040b7884311945a25bfa3c7e9f2
+      runtime_key: c0983ca5788b4aebba9047594004668d
+      name: piecesocake-minijam
+    - id: cv4rsq3oc4rcflasbok0
+      portal_token: 40a806cee81c4e5289d762bae6f0d5e6
+      runtime_key: 546489f1ed6a4bd0bd636d34d534f80c
+      name: RacingGame
+    - id: cr7o45q2t1ch7a6u4dd0
+      portal_token: 9882a7ef0e9f44ed8a853d79ecbb6aa6
+      runtime_key: 8f7df8ed731641eaac2b95470f7f5964
+      name: SDK Project
+    - id: cupi6d1j0c7f98tpvtv0
+      portal_token: f09a2da56606468cb01c1e52ce87806a
+      runtime_key: 43c17b7dbb39432abfd1046106da8b57
+      name: SimulatorUdp
+    - id: cqr5p2i2t1co9vrq7qg0
+      portal_token: ff6e3b5d75e34243bba091a328257742
+      runtime_key: f443e6df82d94a688697d8edaef0f55b
+      name: testd
+    - id: ctdc6n7088dapn2a1p5g
+      portal_token: e23da618ec0846e4921e2fd2f796a49f
+      runtime_key: 55c89c659d054b209889fe64781382e6
+      name: webgl
+    - id: ctdc627088dapn2a1oag
+      portal_token: 23df3ce4ac214599920f573f89f7d06b
+      runtime_key: 94958cb109c44540a09d40401a67602d
+      name: webgl-unity6
+    - id: cv3evn7088d0904e2a60
+      portal_token: ebdaaaab717b430b8bee6fa0ec17aa03
+      runtime_key: 81e91b86e07a453b8d418aa668e09eb4
+      name: WorldProblems
+  multipleProjects: []

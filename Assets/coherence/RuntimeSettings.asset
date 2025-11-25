@@ -12,9 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b91f942a5214496b0e11eaedb54c36, type: 3}
   m_Name: RuntimeSettings
   m_EditorClassIdentifier: 
+  logSettings:
+    EditorLogLevel: 2
+    LogLevel: 2
+    FilterMode: 0
+    LogStackTrace: 0
+    AddTimestamp: 0
+    Watermark: (coherence)
+    AddSourceType: 0
+    SourceFilters: 
+    LogToFile: 0
+    LogFilePath: Logs/player_logs.txt
+    MigratedToSerializedObject: 1
+    FileLogLevel: 1
   schemaID: 2df6c3f5be4b05afc407f017cd497d8af3b7185d
   versionInfo: {fileID: 11400000, guid: 2191b6f902c97477baa32a7919010503, type: 2}
-  runtimeKey: 
+  runtimeKey: 5ec21cd579b34641b5c46509e8cad805
   simulatorSlug: 
   localHost: 127.0.0.1
   localWorldUDPPort: 32001
@@ -24,13 +37,11 @@ MonoBehaviour:
   localRoomsWebPort: 42002
   apiPort: 64001
   worldsAPIPort: 64002
-  localHttpServerHost: localhost
-  localHttpServerPort: 42006
-  localDevelopmentMode: 1
+  pingPort: 0
   useDebugStreams: 0
   organizationID: 
-  projectID: 
-  projectName: 
+  projectID: cq1vofa2t1cuokp9rikg
+  projectName: Default Project
   organizationName: 
   transportType: 0
   transportConfiguration: 0
@@ -40,8 +51,9 @@ MonoBehaviour:
       SearchIntervalMs: 50
       LongSearchWarnThresholdMs: 50
       WarnOnSuspension: 1
-  replicationServerToken: 
+  rsVersionOverride: 
   playApiEndpoint: https://api.prod.coherence.io/v1/play
+  storedSdkVersionBuildMetadata: 
   schemas:
   - {fileID: -1758743643018166929, guid: 266a112c2c9e941a58a87a48e7a4f8cb, type: 3}
   - {fileID: -1758743643018166929, guid: 6f5ccb2cd8ad0f04699ebd7a4f5fb3b6, type: 3}

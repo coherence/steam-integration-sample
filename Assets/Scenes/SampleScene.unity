@@ -184,7 +184,7 @@ MonoBehaviour:
       m_Calls: []
   uniqueId: 
   autoLoginAsGuest: 1
-  playerAccount: 0
+  playerAccount: 3
 --- !u!4 &51272734
 Transform:
   m_ObjectHideFlags: 0
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec98903d53742594da1247d3feba7481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steamAppId: 2409590
+  steamAppId: 480
   steamIdToJoin: 0
 --- !u!4 &193654625
 Transform:

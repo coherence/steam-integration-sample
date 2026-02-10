@@ -65,7 +65,7 @@ namespace SteamSample
             // Validate the endpoint
             var result = endpointData.ValidateLocalAddress();
             var error = endpointData.GetErrorMessage(result);
-;           if (!((result & EndpointData.ValidationResult.ValidLocalEndpoint) == EndpointData.ValidationResult.ValidLocalEndpoint))
+            if (!((result & EndpointData.ValidationResult.ValidLocalEndpoint) == EndpointData.ValidationResult.ValidLocalEndpoint))
             {
                 throw new Exception($"Invalid {nameof(EndpointData)}: {error}");
             }

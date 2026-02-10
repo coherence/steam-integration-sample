@@ -214,6 +214,23 @@ namespace SteamSample
             SteamServer.Init(SteamClient.AppId, serverInit, false);
             Debug.Log($"SteamServer initialized");
 
+            HostWhenReady();
+        }
+
+        private async void HostWhenReady()
+        {
+            // Wait for the Replication Server to be ready to accept connections
+            while (replicationServer != null && !replicationServer.IsReady)
+            {
+                await Task.Yield();
+            }
+
+            if (replicationServer == null)
+            {
+                Debug.LogError("Hosting failed. Replication Server exited before becoming ready");
+                return;
+            }
+
             // Init Steam Relay
             bridge.SetRelay(new SteamRelay());
 

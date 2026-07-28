@@ -9,4 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 0d229f82d9f764ea1aa62dc22b3d4104, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 33fd1ab979c8344bd823a71efe058f6e, type: 3}
     io.coherence.simulator.build.options: {fileID: 11400000, guid: f832357803a68394aafd18aae4e1cd42, type: 2}

@@ -266,7 +266,13 @@ namespace SteamSample
         {
             if (!bridge.IsConnected && !bridge.IsConnecting)
             {
-                throw new Exception("Failed to disconnect, CoherenceBridge is not connected");
+                // The connection can die before ever reaching "Connected" (e.g. a join
+                // attempt against a stale/closed lobby). In that case the underlying
+                // transport may never raise onDisconnected/onConnectionError, so Shutdown()
+                // never runs and local state (activeLobby, etc.) is left stale. Reconcile
+                // it here instead of leaving the UI stuck.
+                Shutdown();
+                return;
             }
 
             bridge.Disconnect();
@@ -274,6 +280,14 @@ namespace SteamSample
             if (replicationServer != null)
             {
                 StopReplicationServer();
+            }
+
+            // If the connection never reached "Connected" (e.g. it was still mid-handshake),
+            // bridge.Disconnect() closes it synchronously without ever raising onDisconnected.
+            // Don't wait on an event that will never come - reconcile now.
+            if (!bridge.IsConnected && !bridge.IsConnecting)
+            {
+                Shutdown();
             }
         }
 

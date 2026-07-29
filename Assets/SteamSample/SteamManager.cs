@@ -125,8 +125,17 @@ namespace SteamSample
         {
             if (activeLobby.HasValue)
             {
-                activeLobby.Value.Leave();
+                var lobby = activeLobby.Value;
                 activeLobby = null;
+
+                try
+                {
+                    lobby.Leave();
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
             }
 
             if (SteamServer.IsValid)
@@ -266,10 +275,6 @@ namespace SteamSample
             {
                 StopReplicationServer();
             }
-
-            // Clear state right away instead of waiting on the async onDisconnected
-            // callback, so the UI reflects the disconnect immediately.
-            Shutdown();
         }
 
         void OnConnected(CoherenceBridge _)

@@ -266,6 +266,10 @@ namespace SteamSample
             {
                 StopReplicationServer();
             }
+
+            // Clear state right away instead of waiting on the async onDisconnected
+            // callback, so the UI reflects the disconnect immediately.
+            Shutdown();
         }
 
         void OnConnected(CoherenceBridge _)
